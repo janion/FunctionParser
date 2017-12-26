@@ -1,5 +1,6 @@
 package fn;
 
+import fn.exception.InvalidFunctionException;
 import fn.operator.Operator;
 import fn.operator.doublearg.Add;
 import fn.operator.doublearg.Divide;
@@ -173,16 +174,20 @@ public class FunctionParser {
         String contents = string.substring(0, 1);
         int bracketCount = 1;
         
-        int pos = 1;
-        while (bracketCount > 0) {
-            String charr = string.substring(pos, pos + 1);
-            if (charr.equals(OPEN_BRACKET)) {
-                bracketCount++;
-            } else if (charr.equals(CLOSE_BRACKET)) {
-                bracketCount--;
-            }
-            contents += charr;
-            pos++;
+        try {
+	        int pos = 1;
+	        while (bracketCount > 0) {
+	            String charr = string.substring(pos, pos + 1);
+	            if (charr.equals(OPEN_BRACKET)) {
+	                bracketCount++;
+	            } else if (charr.equals(CLOSE_BRACKET)) {
+	                bracketCount--;
+	            }
+	            contents += charr;
+	            pos++;
+	        }
+        } catch (StringIndexOutOfBoundsException exptn) {
+        	throw new InvalidFunctionException();
         }
         return contents.substring(1, contents.length() - 1);
     }
