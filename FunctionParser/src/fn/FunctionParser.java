@@ -17,10 +17,8 @@ import fn.operator.singlearg.NullOperation;
 import fn.operator.singlearg.Sin;
 import fn.operator.singlearg.SingleArgumentOperator;
 import fn.operator.singlearg.Sqrt;
-import fn.operator.singlearg.T;
 import fn.operator.singlearg.Tan;
-import fn.operator.singlearg.X;
-import fn.operator.singlearg.Y;
+import fn.operator.singlearg.Variable;
 
 public class FunctionParser {
 
@@ -42,11 +40,6 @@ public class FunctionParser {
 	private static final String POWER = "^";
 	private static final String OPERATIONS = PLUS + MINUS + MULTIPLY + DIVIDE + MODULO + POWER;
 
-	private static final String X = "x";
-	private static final String Y = "y";
-	private static final String T = "t";
-	private static final String VARIABLES = X + Y + T;
-
 	private static final String SPACE = " ";
 	private static final String OPEN_BRACKET = "(";
 	private static final String CLOSE_BRACKET = ")";
@@ -56,6 +49,7 @@ public class FunctionParser {
         String orderedString = orderer.addBrackets(string);
         NegativeNumberAdjuster adjuster = new NegativeNumberAdjuster();
         String adjustedString = adjuster.adjust(orderedString);
+        adjustedString = adjustedString.replace(SPACE, "").toLowerCase();
         Function function = new Function();
         function.setOperator(parseEquation(adjustedString, function));
         return function;
@@ -63,14 +57,7 @@ public class FunctionParser {
 
     
     private SingleArgumentOperator makeVariable(String charr, Function function) {
-        if (charr.equals(X)) {
-            return new X(function);
-        } else if (charr.equals(Y)) {
-            return new Y(function);
-        } else if (charr.equals(T)) {
-        	return new T(function);
-        }
-        return null;
+        return new Variable(function, charr);
     }
         
 
@@ -148,13 +135,9 @@ public class FunctionParser {
                 String numStr = parseNumber(string.substring(pos , string.length()));
                 variable = new Constant(Double.valueOf(numStr).doubleValue());
                 pos += numStr.length();
-            } else if (VARIABLES.contains(charr)) {
+            } else {
                 variable = makeVariable(charr, function);
                 pos++;
-            } else if (charr.equals(SPACE)) {
-                pos++;
-            } else {
-                throw new RuntimeException(String.format("Unrecognised character: \"%s\" in equation:\n\"%s\"", charr, string));
             }
             
             if (v1 == null && variable != null) {
