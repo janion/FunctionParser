@@ -12,6 +12,10 @@ public class Function {
 	private Operator operation;
 	private Map<String, Double> variableValues;
 
+	public List<Double> evaluate() {
+		return evaluate(new HashMap<>());
+	}
+
 	public List<Double> evaluate(String[] variables, double[] values) {
 		return evaluate(createVariables(variables, values));
 	}
