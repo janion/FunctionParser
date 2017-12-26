@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import fn.exception.NoVariableException;
 import fn.operator.Operator;
 
 public class Function {
@@ -36,7 +37,7 @@ public class Function {
 
 	public double getVariableValue(String variableName) {
 		if (!variableValues.containsKey(variableName)) {
-			throw new IllegalStateException(String.format("No variable named %s provided with a value", variableName));
+			throw new NoVariableException(variableName);
 		}
 		return variableValues.get(variableName);
 	}
